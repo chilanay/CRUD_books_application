@@ -1,0 +1,31 @@
+create table authors 
+(
+	authorID int primary key,
+	authorName varchar(15)
+);
+
+create table books 
+(
+	bookID int primary key,
+	title varchar(15),
+	stock int,
+	authorID int,
+	foreign key (AuthorID) references Authors(AuthorID)
+);
+
+create table customers 
+(
+	customerID int primary key,
+	customerName varchar(15)
+);
+
+create table orders 
+(
+	orderID int primary key,
+	customerID int,
+	orderDate int,
+	bookID int,
+	quantityOrder int,
+	foreign key (CustomerID) references Customers(CustomerID),
+	foreign key (BookID) references Books(BookID)
+);
