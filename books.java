@@ -1,4 +1,4 @@
-public class books {
+public class Books {
     int bookID;
     String title;
     int stock;

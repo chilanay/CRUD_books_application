@@ -1,6 +1,6 @@
 import java.sql.Date;
 
-public class orders {
+public class Orders {
     int orderID;
     Date orderDate;
     int quantityOrder;
