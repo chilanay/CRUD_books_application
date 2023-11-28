@@ -16,7 +16,9 @@ create table books
 create table customers 
 (
 	customerID int primary key,
-	customerName varchar(15)
+	customerName varchar(15),
+	address varchar (50),
+	phoneNumber int
 );
 
 create table orders 
