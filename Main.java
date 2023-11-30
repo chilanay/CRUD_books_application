@@ -1,49 +1,39 @@
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class Main {
+    public static void main(String[] args) {
+        // final String DB_URL = "jdbc:mysql://localhost/Books?serverTimezone=UTC";
+        final String DB_URL = "jdbc:postgresql://localhost:5433/Books";
 
-    // public static void ConnectDatabase(String dbid, String userid, String passwd)
-    // {
-    // try (Connection conn = DriverManager.getConnection(
-    // "jdbc:oracle:thin:@db.yale.edu:2000:univdb", userid = "root", passwd =
-    // "12345");
-    // Statement stmt = conn.createStatement();) {
-    // } catch (SQLException sqle) {
-    // System.out.println("SQLException : " + sqle);
-    // }
-    // }
+        final String USERNAME = "postgres";
+        final String PASSWORD = "12345";
 
-    public static void ConnectDatabase(String dbid, String userid, String passwd) {
+        Connection conn = null;
+        Statement stmt = null;
+
         try {
-            // Load the PostgreSQL JDBC driver
-            Class.forName("org.postgresql.Driver");
+            conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
+            System.out.println("Connected to database successfully...");
 
-            // Construct the connection URL
-            String url = "jdbc:postgresql://localhost:5433/" + dbid;
+            stmt = conn.createStatement();
+            String sql = "INSERT INTO customers (customerID, customername, address, phonenumber)"
+                    + "VALUES ('2', 'Someone2', '46 B street', '234123123')";
 
-            // Establish the connection
-            try (Connection conn = DriverManager.getConnection(url, userid, passwd);
-                    Statement stmt = conn.createStatement()) {
-                // You can perform database operations here if needed
-                System.out.println("Connected to the database");
-            }
-        } catch (ClassNotFoundException e) {
-            System.out.println("Error loading PostgreSQL JDBC driver: " + e.getMessage());
-        } catch (SQLException sqle) {
-            System.out.println("SQLException: " + sqle);
+            ((java.sql.Statement) stmt).executeUpdate(sql);
+            System.out.println("Inserted records into the table...");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        try {
+            if (stmt != null)
+                stmt.close();
+            if (conn != null)
+                conn.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
-
-    public static void main(String[] args) {
-        // Replace these values with your PostgreSQL database credentials
-        String dbid = "your-database-name";
-        String userid = "pg_read_all_data";
-        String passwd = "your-password";
-
-        ConnectDatabase(dbid, userid, passwd);
-    }
-
 }
