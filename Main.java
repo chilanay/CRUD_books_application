@@ -4,7 +4,6 @@ import java.sql.DriverManager;
 
 public class Main {
     public static void main(String[] args) {
-        // final String DB_URL = "jdbc:mysql://localhost/Books?serverTimezone=UTC";
         final String DB_URL = "jdbc:postgresql://localhost:5433/Books";
 
         final String USERNAME = "postgres";
