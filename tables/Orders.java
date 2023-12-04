@@ -1,32 +1,27 @@
 package tables;
-import java.sql.Date;
 
 public class Orders {
     int orderID;
-    Date orderDate;
+    String orderDate;
     int quantityOrder;
+
+    public Orders(int orderID, String orderDate, int quantityOrder) {
+        super();
+        this.orderID = orderID;
+        this.orderDate = orderDate;
+        this.quantityOrder = quantityOrder;
+    }
+
 
     public int getOrderID() {
         return this.orderID;
     }
 
-    public Date getOrderDate() {
+    public String getOrderDate() {
         return this.orderDate;
     }
 
     public int getQuantityOrder() {
         return this.quantityOrder;
-    }
-
-    public void setOrderID(int orderID) {
-        this.orderID = orderID;
-    }
-
-    public void setOrderDate(Date orderDate) {
-        this.orderDate = orderDate;
-    }
-
-    public void setQuantityOrder(int quantityOrder) {
-        this.quantityOrder = quantityOrder;
     }
 }

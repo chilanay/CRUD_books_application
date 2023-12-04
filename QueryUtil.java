@@ -1,11 +1,42 @@
 public class QueryUtil {
+
+    // -----------------------------------Insert-----------------------------------
+
     public static String insertBookQuery() {
         return "INSERT INTO books (bookID, title, stock) VALUES (?, ?,?)";
     }
 
+    public static String insertAuthorQuery() {
+        return "INSERT INTO authors (authorID, authorName) VALUES (?, ?)";
+    }
+
+    public static String insertOrdersQuery() {
+        return "INSERT INTO orders (orderID, orderDate, quantityOrder) VALUES (?, ?, ?)";
+    }
+
+    public static String insertCustomersQuery() {
+        return "INSERT INTO customers (customerID, customerName, address, phoneNumber) VALUES (?, ?, ?, ?)";
+    }
+
+    // -----------------------------------Select-----------------------------------
+
     public static String selectAllBookQuery() {
         return "SELECT * FROM books";
     }
+
+    public static String selectAllAuthorQuery() {
+        return "SELECT * FROM authors";
+    }
+
+    public static String selectAllOrderQuery() {
+        return "SELECT * FROM orders";
+    }
+    public static String selectAllCustomerQuery() {
+        return "SELECT * FROM customers";
+    }
+
+
+    // -----------------------------------Delete-----------------------------------
 
     public static String deleteBookByIdQuery(int bookID) {
         return "DELETE FROM books WHERE bookID = " + bookID;

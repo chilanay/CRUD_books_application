@@ -1,16 +1,25 @@
 package tables;
+
 public class Customers {
     int customerID;
-    String name;
+    String customerName;
     String address;
     int phoneNumber;
+
+    public Customers(int customerID, String customerName, String address, int phoneNumber) {
+        super();
+        this.customerID = customerID;
+        this.customerName = customerName;
+        this.address = address;
+        this.phoneNumber = phoneNumber;
+    }
 
     public int getCustomerID() {
         return this.customerID;
     }
 
-    public String getName() {
-        return this.name;
+    public String getCustomerName() {
+        return this.customerName;
     }
 
     public String getAddress() {
@@ -19,21 +28,5 @@ public class Customers {
 
     public int getPhoneNumber() {
         return this.phoneNumber;
-    }
-
-    public void setCustomerID(int customerID) {
-        this.customerID = customerID;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public void setPhoneNumber(int phoneNumber) {
-        this.phoneNumber = phoneNumber;
     }
 }

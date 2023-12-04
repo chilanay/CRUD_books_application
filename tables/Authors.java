@@ -1,21 +1,20 @@
 package tables;
+
 public class Authors {
     int authorID;
-    String name;
+    String authorName;
+
+    public Authors(int authorID, String authorName) {
+        super();
+        this.authorID = authorID;
+        this.authorName = authorName;
+    }
 
     public int getAuthorID() {
         return this.authorID;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public void setAuthorID(int authorID) {
-        this.authorID = authorID;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public String getAuthorName() {
+        return this.authorName;
     }
 }
