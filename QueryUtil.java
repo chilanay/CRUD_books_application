@@ -12,7 +12,7 @@ public class QueryUtil {
     }
 
     public static String selectBookById(int bookID) {
-        return "DELETE FROM books WHERE bookID = " + bookID;
+        return "SELECT * FROM books WHERE bookID = " + bookID;
     }
 
     public static String updateBookQuery(int bookID) {

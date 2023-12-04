@@ -15,7 +15,7 @@ public class Main {
             System.out.println("2. Select all");
             System.out.println("3. Delete employee");
             System.out.println("4. Update employee");
-            System.out.println("Exit");
+            System.out.println("Exit (5)");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -40,7 +40,7 @@ public class Main {
                   boolean isFound = databaseService.getBookById(updateId);
 
                   if(isFound){
-                     System.out.println("Enter ID, title, stock:");
+                     System.out.println("Enter title, stock:");
                      Books book = new Books(updateId, scanner.nextLine(), Integer.parseInt(scanner.nextLine()));
                      databaseService.updateBook(book);
                   }
