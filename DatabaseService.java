@@ -188,6 +188,98 @@ public class DatabaseService {
         return isFound;
     }
 
+    public void deleteAuthorById(int authorID) throws SQLException {
+        try (Connection connection = connectDatabase.getConnection();
+                Statement statement = connection.createStatement();) {
+            int rows = statement.executeUpdate(QueryUtil.deleteAuthorByIdQuery(authorID));
+
+            if (rows > 0) {
+                System.out.println("Record deleted.");
+            } else {
+                System.out.println("Something went wrong.");
+            }
+        }
+    }
+
+    public boolean getAuthorById(int id) throws SQLException {
+        boolean isFoundAuthor = false;
+        try (Connection connection = connectDatabase.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(QueryUtil.selectAuthorById(id));) {
+            if (resultSet.next()) {
+                isFoundAuthor = true;
+                printAuthor(new Authors(resultSet.getInt("authorID"),
+                        resultSet.getString("authorName")));
+            } else {
+                System.out.println("Record not found for ID = " + id);
+            }
+        }
+        return isFoundAuthor;
+    }
+
+    public void deleteOrderById(int orderID) throws SQLException {
+        try (Connection connection = connectDatabase.getConnection();
+                Statement statement = connection.createStatement();) {
+            int rows = statement.executeUpdate(QueryUtil.deleteOrderByIdQuery(orderID));
+
+            if (rows > 0) {
+                System.out.println("Record deleted.");
+            } else {
+                System.out.println("Something went wrong.");
+            }
+        }
+    }
+
+    public boolean getOrderById(int id) throws SQLException {
+        boolean isFound = false;
+        try (Connection connection = connectDatabase.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(QueryUtil.selectBookById(id));) {
+            if (resultSet.next()) {
+                isFound = true;
+                printOrder(new Orders(resultSet.getInt("orderID"),
+                        resultSet.getString("orderDate"),
+                        resultSet.getInt("quantityOrder")));
+            } else {
+                System.out.println("Record not found for ID = " + id);
+            }
+        }
+        return isFound;
+    }
+
+    public void deleteCustomerById(int customerID) throws SQLException {
+        try (Connection connection = connectDatabase.getConnection();
+                Statement statement = connection.createStatement();) {
+            int rows = statement.executeUpdate(QueryUtil.deleteCustomerByIdQuery(customerID));
+
+            if (rows > 0) {
+                System.out.println("Record deleted.");
+            } else {
+                System.out.println("Something went wrong.");
+            }
+        }
+    }
+
+    public boolean getCustomerById(int id) throws SQLException {
+        boolean isFound = false;
+        try (Connection connection = connectDatabase.getConnection();
+                Statement statement = connection.createStatement();
+                ResultSet resultSet = statement.executeQuery(QueryUtil.selectBookById(id));) {
+            if (resultSet.next()) {
+                isFound = true;
+                printCustomer(new Customers(resultSet.getInt("customerID"),
+                        resultSet.getString("customerName"),
+                        resultSet.getString("address"),
+                        resultSet.getInt("phoneNumber")));
+            } else {
+                System.out.println("Record not found for ID = " + id);
+            }
+        }
+        return isFound;
+    }
+
+    // -----------------------------------Update-----------------------------------
+
     public void updateBook(Books book) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 PreparedStatement preparedStatement = connection
@@ -195,6 +287,22 @@ public class DatabaseService {
             preparedStatement.setInt(1, book.getBookID());
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setInt(3, book.getStock());
+
+            int rows = preparedStatement.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Record updated.");
+            } else {
+                System.out.println("Something went wrong.");
+            }
+        }
+    }
+
+    public void updateAuthor(Authors authors) throws SQLException {
+        try (Connection connection = connectDatabase.getConnection();
+                PreparedStatement preparedStatement = connection
+                        .prepareStatement(QueryUtil.updateAuthorQuery(authors.getAuthorID()));) {
+            preparedStatement.setInt(1, authors.getAuthorID());
+            preparedStatement.setString(2, authors.getAuthorName());
 
             int rows = preparedStatement.executeUpdate();
             if (rows > 0) {

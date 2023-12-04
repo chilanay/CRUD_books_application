@@ -74,6 +74,7 @@ public class Main {
                   System.out.println("4. Customers table");
 
                   int choiceSelect = Integer.parseInt(scanner.nextLine());
+
                   switch (choiceSelect) {
                      case 1:
                         databaseService.getAllBooks();
@@ -90,18 +91,65 @@ public class Main {
                   }
                   break;
                case 3:
-                  System.out.println("Enter ID of book:");
-                  databaseService.deleteBookById(Integer.parseInt(scanner.nextLine()));
+                  System.out.println("Delete from:");
+                  System.out.println("1. Books table");
+                  System.out.println("2. Authors table");
+                  System.out.println("3. Orders table");
+                  System.out.println("4. Customers table");
+
+                  int choiceDelete = Integer.parseInt(scanner.nextLine());
+
+                  switch (choiceDelete) {
+                     case 1:
+                        System.out.println("Enter ID of Book:");
+                        databaseService.deleteBookById(Integer.parseInt(scanner.nextLine()));
+                        break;
+                     case 2:
+                        System.out.println("Enter ID of Author:");
+                        databaseService.deleteAuthorById(Integer.parseInt(scanner.nextLine()));
+                        break;
+                     case 3:
+                        System.out.println("Enter ID of Order:");
+                        databaseService.deleteOrderById(Integer.parseInt(scanner.nextLine()));
+                        break;
+                     case 4:
+                        System.out.println("Enter ID of Customer:");
+                        databaseService.deleteCustomerById(Integer.parseInt(scanner.nextLine()));
+                        break;
+                  }
                   break;
                case 4:
-                  System.out.println("Enter ID of book:");
-                  int updateId = Integer.parseInt(scanner.nextLine());
-                  boolean isFound = databaseService.getBookById(updateId);
+                  System.out.println("Delete from:");
+                  System.out.println("1. Books table");
+                  System.out.println("2. Authors table");
+                  System.out.println("3. Orders table");
+                  System.out.println("4. Customers table");
 
-                  if (isFound) {
-                     System.out.println("Enter title, stock:");
-                     Books book = new Books(updateId, scanner.nextLine(), Integer.parseInt(scanner.nextLine()));
-                     databaseService.updateBook(book);
+                  int choiceUpdate = Integer.parseInt(scanner.nextLine());
+
+                  switch (choiceUpdate) {
+                     case 1:
+                        System.out.println("Enter ID of Book:");
+                        int updateId = Integer.parseInt(scanner.nextLine());
+                        boolean isFound = databaseService.getBookById(updateId);
+
+                        if (isFound) {
+                           System.out.println("Enter title, stock:");
+                           Books book = new Books(updateId, scanner.nextLine(), Integer.parseInt(scanner.nextLine()));
+                           databaseService.updateBook(book);
+                        }
+                        break;
+                     case 2:
+                        System.out.println("Enter ID of Author:");
+                        int updateIdAuthor = Integer.parseInt(scanner.nextLine());
+                        boolean isFoundAuthor = databaseService.getBookById(updateIdAuthor);
+
+                        if (isFoundAuthor) {
+                           System.out.println("Enter Author Name:");
+                           Authors author = new Authors(updateIdAuthor, scanner.nextLine());
+                           databaseService.updateAuthor(author);
+                        }
+                        break;
                   }
                   break;
                case 5:
