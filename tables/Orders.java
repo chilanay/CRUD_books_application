@@ -1,3 +1,4 @@
+package tables;
 import java.sql.Date;
 
 public class Orders {

@@ -1,3 +1,4 @@
+package tables;
 public class Customers {
     int customerID;
     String name;

@@ -1,3 +1,4 @@
+package tables;
 public class Authors {
     int authorID;
     String name;

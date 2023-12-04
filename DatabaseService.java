@@ -4,6 +4,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import tables.Books;
+
 public class DatabaseService {
     ConnectToDatabase connectDatabase = new ConnectToDatabase();
 
