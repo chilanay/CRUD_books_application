@@ -1,38 +1,22 @@
-import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 
 public class ConnectToDatabase {
-    public static void main(String[] args) {
-        final String DB_URL = "jdbc:postgresql://localhost:5433/Books";
+    public static final String DB_PATH = "org.postgresql.Driver";
+    public static final String DB_URL = "jdbc:postgresql://localhost:5433/Books";
+    public static final String USERNAME = "postgres";
+    public static final String PASSWORD = "12345";
 
-        final String USERNAME = "postgres";
-        final String PASSWORD = "12345";
-
-        Connection conn = null;
-        Statement stmt = null;
-
+    public ConnectToDatabase() {
         try {
-            conn = DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
-            System.out.println("Connected to database successfully...");
-
-            stmt = conn.createStatement();
-            String sql = "INSERT INTO customers (customerID, customername, address, phonenumber)"
-                    + "VALUES ('2', 'Someone2', '46 B street', '234123123')";
-
-            ((java.sql.Statement) stmt).executeUpdate(sql);
-            System.out.println("Inserted records into the table...");
+            Class.forName(DB_PATH);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("Something went wrong " + e);
         }
+    }
 
-        try {
-            if (stmt != null)
-                stmt.close();
-            if (conn != null)
-                conn.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(DB_URL, USERNAME, PASSWORD);
     }
 }

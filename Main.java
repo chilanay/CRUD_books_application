@@ -1,120 +1,59 @@
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
 import java.util.Scanner;
 
-class Main{
-   /**
- * @param args
- */
-public static void main(String[] args) {
-      
-      List<Employee> c = new ArrayList<Employee>();
-      Scanner s = new Scanner(System.in);
-      Scanner s1 = new Scanner(System.in);
-      int ch;
-      do{
-         System.out.println("1.INSERT");
-         System.out.println("2.DISPLAY");
-         System.out.println("3.SEARCH");
-         System.out.println("4.DELETE");
-         System.out.println("5.UPDATE");
-         System.out.print("Enter Your Choice : ");
-         ch = s.nextInt();
+public class Main {
+   public static void main(String[] args) {
 
-         switch(ch){
-            case 1:
-               System.out.print("Enter Empno : ");
-               int eno = s.nextInt();
-               System.out.print("Enter EmpName : ");
-               String ename = s1.nextLine();
-               System.out.print("Enter Salary : ");
-               int salary = s.nextInt();
+      DatabaseService databaseService = new DatabaseService();
 
-               c.add(new Employee(eno,ename,salary));
-            break;
-            case 2:
-               System.out.println("----------------------------");
-               Iterator<Employee> i = c.iterator();
-               while(i.hasNext()){
-                  Employee e = i.next(); 
-                  System.out.println(e);
-               }
-               System.out.println("----------------------------");
-            break;
-            case 3:
-               boolean found = false;
-               System.out.print("Enter Empno to Search :");
-               int empno = s.nextInt();
-               System.out.println("----------------------------");
-               i = c.iterator();
-               while(i.hasNext()){
-                  Employee e = i.next();
-                  if(e.getEmpno() == empno)  {
-                     System.out.println(e);
-                     found = true;
+      try (Scanner scanner = new Scanner(System.in);) {
+         boolean isRunning = true;
+         while (isRunning) {
+            System.out.println("Enter choice");
+            System.out.println("1. Insert");
+            System.out.println("2. Select all");
+            System.out.println("3. Delete employee");
+            System.out.println("4. Update employee");
+            System.out.println("Exit");
+
+            int choice = Integer.parseInt(scanner.nextLine());
+
+            switch (choice) {
+               case 1:
+                  System.out.println("Enter ID, title, stock");
+                  int bookID = Integer.parseInt(scanner.nextLine());
+                  String title = scanner.nextLine();
+                  int stock = Integer.parseInt(scanner.nextLine());
+                  databaseService.insertBooks(new Books(bookID, title, stock));
+                  break;
+               case 2:
+                  databaseService.getAllBooks();
+                  break;
+               case 3:
+                  System.out.println("Enter ID of book:");
+                  databaseService.deleteBookById(Integer.parseInt(scanner.nextLine()));
+                  break;
+               case 4:
+                  System.out.println("Enter ID of book:");
+                  int updateId = Integer.parseInt(scanner.nextLine());
+                  boolean isFound = databaseService.getBookById(updateId);
+
+                  if(isFound){
+                     System.out.println("Enter ID, title, stock:");
+                     Books book = new Books(updateId, scanner.nextLine(), Integer.parseInt(scanner.nextLine()));
+                     databaseService.updateBook(book);
                   }
-               }
-               
-               if(!found){
-                  System.out.println("Record Not Found");
-               }
-               System.out.println("----------------------------");
-            break;
 
-            case 4:
-               found = false;
-               System.out.print("Enter Empno to Delete :");
-               empno = s.nextInt();
-               System.out.println("----------------------------");
-               i = c.iterator();
-               while(i.hasNext()){
-                  Employee e = i.next();
-                  if(e.getEmpno() == empno)  {
-                     i.remove();
-                     found = true;
-                  }
-               }
-               
-               if(!found){
-                  System.out.println("Record Not Found");
-               }else{
-                  System.out.println("Record is Deleted Successfully...!");
-               }
-
-               System.out.println("----------------------------");
-            break;
-            case 5:
-               found = false;
-               System.out.print("Enter Empno to Update :");
-               empno = s.nextInt();
-               
-               ListIterator<Employee>li = c.listIterator();
-               while(li.hasNext()){
-                  Employee e = li.next();
-                  if(e.getEmpno() == empno)  {
-                     System.out.print("Enter new Name : ");
-                     ename = s1.nextLine();
-
-                     System.out.print("Enter new Salary : ");
-                     salary = s.nextInt();
-                     li.set(new Employee(empno,ename,salary));
-                     found = true;
-                  }
-               }
-               
-               if(!found){
-                  System.out.println("Record Not Found");
-               }else{
-                  System.out.println("Record is Updated Successfully...!");
-               }
-
-               
-            break;
-
-            
+                  break;
+               case 5:
+                  System.out.println("Thank you. Visit again.");
+                  isRunning = false;
+                  break;
+               default:
+                  break;
+            }
          }
-      }while(ch!=0);
+      } catch (Exception e) {
+         throw new RuntimeException("Something went wrong " + e);
+      }
    }
 }

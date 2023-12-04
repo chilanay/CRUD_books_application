@@ -1,7 +1,14 @@
 public class Books {
-    int bookID;
-    String title;
-    int stock;
+    private int bookID;
+    private String title;
+    private int stock;
+
+    public Books(int bookID, String title, int stock) {
+        super();
+        this.bookID = bookID;
+        this.title = title;
+        this.stock = stock;
+    }
 
     public int getBookID() {
         return this.bookID;
