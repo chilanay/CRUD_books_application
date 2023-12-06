@@ -1,4 +1,5 @@
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,12 +22,29 @@ public class DatabaseService {
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setInt(3, book.getStock());
 
-            int rows = preparedStatement.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Record created successfully.");
-            } else {
-                System.out.println("Insert operation failed...");
+            if (authorExists(book.getAuthorIDBooks())) {
+                preparedStatement.setInt(4, book.getAuthorIDBooks());
+
+                int rows = preparedStatement.executeUpdate();
+                if (rows > 0) {
+                    System.out.println("Record created successfully.");
+                } else {
+                    System.out.println("Insert operation failed...");
+                }
             }
+        }
+    }
+
+    private boolean authorExists(int authorID) {
+        try (Connection connection = connectDatabase.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(QueryUtil.selectAuthorByIdQuery())) {
+            preparedStatement.setInt(1, authorID);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
@@ -116,7 +134,8 @@ public class DatabaseService {
             while (resultSet.next()) {
                 printBook(new Books(resultSet.getInt("bookID"),
                         resultSet.getString("title"),
-                        resultSet.getInt("stock")));
+                        resultSet.getInt("stock"),
+                        resultSet.getInt("authorIDBooks")));
             }
         }
     }
@@ -125,6 +144,7 @@ public class DatabaseService {
         System.out.println("Book ID: " + book.getBookID());
         System.out.println("Book Title: " + book.getTitle());
         System.out.println("Book Stock Info: " + book.getStock());
+        System.out.println("Author ID: " + book.getAuthorIDBooks());
         System.out.println("---------------------------------------------");
     }
 
@@ -210,13 +230,16 @@ public class DatabaseService {
                 isFound = true;
                 printBook(new Books(resultSet.getInt("bookID"),
                         resultSet.getString("title"),
-                        resultSet.getInt("stock")));
+                        resultSet.getInt("stock"),
+                        resultSet.getInt("authorIDBooks")));
             } else {
                 System.out.println("Record not found for ID = " + id);
             }
         }
         return isFound;
     }
+
+    // -----------------------------------Update-----------------------------------
 
     public void updateBook(Books book) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
@@ -225,6 +248,7 @@ public class DatabaseService {
             preparedStatement.setInt(1, book.getBookID());
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setInt(3, book.getStock());
+            preparedStatement.setInt(4, book.getAuthorIDBooks());
 
             int rows = preparedStatement.executeUpdate();
             if (rows > 0) {
@@ -232,6 +256,66 @@ public class DatabaseService {
             } else {
                 System.out.println("Something went wrong.");
             }
+        }
+    }
+
+    // -----------------------------------Metadata-----------------------------------
+
+    public void displayTableInfo() {
+        try (Connection connection = connectDatabase.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet resultSet = metaData.getTables(null, null, "%", null);
+
+            while (resultSet.next()) {
+                System.out.println("Table Name: " + resultSet.getString(3));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void displayColumnInfo(String tableName) {
+        try (Connection connection = connectDatabase.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet resultSet = metaData.getColumns(null, null, tableName, "%");
+
+            while (resultSet.next()) {
+                System.out.println("Column Name: " + resultSet.getString("COLUMN_NAME"));
+                System.out.println("Data Type: " + resultSet.getString("TYPE_NAME"));
+                System.out.println("---------------------------------------------");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void displayPrimaryKeys(String tableName) {
+        try (Connection connection = connectDatabase.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet resultSet = metaData.getPrimaryKeys(null, null, tableName);
+
+            while (resultSet.next()) {
+                System.out.println("Primary Key: " + resultSet.getString("COLUMN_NAME"));
+                System.out.println("---------------------------------------------");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void displayForeignKeys(String tableName) {
+        try (Connection connection = connectDatabase.getConnection()) {
+            DatabaseMetaData metaData = connection.getMetaData();
+            ResultSet resultSet = metaData.getImportedKeys(null, null, tableName);
+
+            while (resultSet.next()) {
+                System.out.println("Foreign Key: " + resultSet.getString("FKCOLUMN_NAME"));
+                System.out.println("Referenced Table: " + resultSet.getString("PKTABLE_NAME"));
+                System.out.println("Referenced Column: " + resultSet.getString("PKCOLUMN_NAME"));
+                System.out.println("---------------------------------------------");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

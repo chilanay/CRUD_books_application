@@ -15,10 +15,11 @@ public class Main {
          while (isRunning) {
             System.out.println("Enter choice");
             System.out.println("1. Insert");
-            System.out.println("2. Select all");
-            System.out.println("3. Delete employee");
-            System.out.println("4. Update employee");
+            System.out.println("2. Select");
+            System.out.println("3. Delete Book");
+            System.out.println("4. Update Book");
             System.out.println("Exit (5)");
+            System.out.println("Access Metadata (6)");
 
             int choice = Integer.parseInt(scanner.nextLine());
 
@@ -34,12 +35,14 @@ public class Main {
 
                   switch (choiceInsert) {
                      case 1:
-                        System.out.println("Enter ID, title, stock");
+                        System.out.println("Enter ID, Title, Stock, Author ID");
                         String[] bookInput = scanner.nextLine().split(",");
                         int bookID = Integer.parseInt(bookInput[0]);
                         String title = bookInput[1].trim();
                         int stock = Integer.parseInt(bookInput[2].trim());
-                        databaseService.insertBooks(new Books(bookID, title, stock));
+                        int authodIDBooks = Integer.parseInt(bookInput[3].trim());
+
+                        databaseService.insertBooks(new Books(bookID, title, stock, authodIDBooks));
                         break;
                      case 2:
                         System.out.println("Enter AuthorID, Author Name");
@@ -49,7 +52,7 @@ public class Main {
                         databaseService.insertAuthors(new Authors(authorID, authorName));
                         break;
                      case 3:
-                        System.out.println("Enter OrderID, OrderDate, OrderQuantity");
+                        System.out.println("Enter OrderID, OrderDate, OrderQuantity, BookID");
                         String[] orderInput = scanner.nextLine().split(",");
                         int orderID = Integer.parseInt(orderInput[0]);
                         String orderDate = orderInput[1].trim();
@@ -103,18 +106,59 @@ public class Main {
                   boolean isFound = databaseService.getBookById(updateId);
 
                   if (isFound) {
-                     System.out.println("Enter title, stock:");
-                     Books book = new Books(updateId, scanner.nextLine(), Integer.parseInt(scanner.nextLine()));
-                     databaseService.updateBook(book);
+                     System.out.println("Enter Title, Stock, Author ID:");
+
+                     String title = scanner.nextLine();
+                     String stockStr = scanner.nextLine();
+                     String authorStr = scanner.nextLine();
+
+                     if (!title.trim().isEmpty() && !stockStr.trim().isEmpty() && !authorStr.trim().isEmpty()) {
+                        Books book = new Books(updateId, title, Integer.parseInt(stockStr),
+                              Integer.parseInt(authorStr));
+                        databaseService.updateBook(book);
+                     } else {
+                        System.out.println("Invalid input. Title, Stock, and Author cannot be empty.");
+                     }
                   }
                   break;
                case 5:
                   System.out.println("Thank you. Visit again.");
                   isRunning = false;
                   break;
+
+               case 6:
+                  System.out.println("Metadata Options:");
+                  System.out.println("1. Display Table Names");
+                  System.out.println("2. Display Column Info for a Table");
+                  System.out.println("3. Display Primary Keys for a Table");
+                  System.out.println("4. Display Foreign Keys for a Table");
+                  int metadataOption = Integer.parseInt(scanner.nextLine());
+
+                  switch (metadataOption) {
+                     case 1:
+                        databaseService.displayTableInfo();
+                        break;
+                     case 2:
+                        System.out.println("Enter Table Name:");
+                        String tableName = scanner.nextLine();
+                        databaseService.displayColumnInfo(tableName);
+                        break;
+                     case 3:
+                        System.out.println("Enter Table Name:");
+                        tableName = scanner.nextLine();
+                        databaseService.displayPrimaryKeys(tableName);
+                        break;
+                     case 4:
+                        System.out.println("Enter Table Name:");
+                        tableName = scanner.nextLine();
+                        databaseService.displayForeignKeys(tableName);
+                        break;
+                  }
+                  break;
                default:
                   break;
             }
+
          }
       } catch (Exception e) {
          throw new RuntimeException("Something went wrong " + e);

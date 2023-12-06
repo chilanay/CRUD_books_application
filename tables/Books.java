@@ -4,12 +4,13 @@ public class Books {
     private int bookID;
     private String title;
     private int stock;
+    private int authorIDBooks;
 
-    public Books(int bookID, String title, int stock) {
-        super();
+    public Books(int bookID, String title, int stock, int authorIDBooks) {
         this.bookID = bookID;
         this.title = title;
         this.stock = stock;
+        this.authorIDBooks = authorIDBooks;
     }
 
     public int getBookID() {
@@ -24,15 +25,7 @@ public class Books {
         return this.stock;
     }
 
-    public void setBookID(int bookID) {
-        this.bookID = bookID;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setStock(int stock) {
-        this.stock = stock;
+    public int getAuthorIDBooks() {
+        return this.authorIDBooks;
     }
 }
