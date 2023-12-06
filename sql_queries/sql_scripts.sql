@@ -26,8 +26,8 @@ create table orders
 	orderID int primary key,
 	customerID int,
 	orderDate varchar(50),
-	bookID int,
+	bookIDOrders int,
 	quantityOrder int,
 	foreign key (CustomerID) references Customers(CustomerID),
-	foreign key (BookID) references Books(BookID)
+	foreign key (BookIDOrders) references Books(BookID)
 );

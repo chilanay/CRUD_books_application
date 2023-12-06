@@ -45,18 +45,47 @@ public class DatabaseService {
         }
     }
 
-    public void insertOrders(Orders order) throws SQLException {
-        try (Connection connection = connectDatabase.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(QueryUtil.insertOrdersQuery());) {
-            preparedStatement.setInt(1, order.getOrderID());
-            preparedStatement.setString(2, order.getOrderDate());
-            preparedStatement.setInt(3, order.getQuantityOrder());
+    public void insertOrderAndUpdateStock(Orders order) throws SQLException {
+        Connection connection = null;
+        try {
+            connection = connectDatabase.getConnection();
+            connection.setAutoCommit(false);
 
-            int rows = preparedStatement.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Record created successfully.");
-            } else {
-                System.out.println("Insert operation failed...");
+            try (PreparedStatement insertOrderStatement = connection.prepareStatement(QueryUtil.insertOrdersQuery())) {
+                insertOrderStatement.setInt(1, order.getOrderID());
+                insertOrderStatement.setString(2, order.getOrderDate());
+                insertOrderStatement.setInt(3, order.getQuantityOrder());
+                insertOrderStatement.setInt(4, order.getBookIDOrder());
+                int rowsOrder = insertOrderStatement.executeUpdate();
+
+                if (rowsOrder <= 0) {
+                    throw new SQLException("Insert operation for order failed.");
+                }
+
+                try (PreparedStatement updateStockStatement = connection
+                        .prepareStatement(QueryUtil.updateBookStockQuery())) {
+                    updateStockStatement.setInt(1, order.getQuantityOrder());
+                    updateStockStatement.setInt(2, order.getBookIDOrder());
+                    int rowsStock = updateStockStatement.executeUpdate();
+
+                    if (rowsStock <= 0) {
+                        throw new SQLException("Update operation for stock failed.");
+                    }
+
+                    connection.commit();
+                    System.out.println("Transaction committed successfully.");
+                }
+            }
+        } catch (SQLException e) {
+            if (connection != null) {
+                connection.rollback();
+            }
+            System.out.println("Transaction rolled back.");
+            throw new SQLException("Transaction failed: " + e.getMessage());
+        } finally {
+            if (connection != null) {
+                connection.setAutoCommit(true);
+                connection.close();
             }
         }
     }
@@ -123,7 +152,8 @@ public class DatabaseService {
             while (resultSet.next()) {
                 printOrder(new Orders(resultSet.getInt("orderID"),
                         resultSet.getString("orderDate"),
-                        resultSet.getInt("quantityOrder")));
+                        resultSet.getInt("quantityOrder"),
+                        resultSet.getInt("bookIDOrders")));
             }
         }
     }
@@ -188,98 +218,6 @@ public class DatabaseService {
         return isFound;
     }
 
-    public void deleteAuthorById(int authorID) throws SQLException {
-        try (Connection connection = connectDatabase.getConnection();
-                Statement statement = connection.createStatement();) {
-            int rows = statement.executeUpdate(QueryUtil.deleteAuthorByIdQuery(authorID));
-
-            if (rows > 0) {
-                System.out.println("Record deleted.");
-            } else {
-                System.out.println("Something went wrong.");
-            }
-        }
-    }
-
-    public boolean getAuthorById(int id) throws SQLException {
-        boolean isFoundAuthor = false;
-        try (Connection connection = connectDatabase.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(QueryUtil.selectAuthorById(id));) {
-            if (resultSet.next()) {
-                isFoundAuthor = true;
-                printAuthor(new Authors(resultSet.getInt("authorID"),
-                        resultSet.getString("authorName")));
-            } else {
-                System.out.println("Record not found for ID = " + id);
-            }
-        }
-        return isFoundAuthor;
-    }
-
-    public void deleteOrderById(int orderID) throws SQLException {
-        try (Connection connection = connectDatabase.getConnection();
-                Statement statement = connection.createStatement();) {
-            int rows = statement.executeUpdate(QueryUtil.deleteOrderByIdQuery(orderID));
-
-            if (rows > 0) {
-                System.out.println("Record deleted.");
-            } else {
-                System.out.println("Something went wrong.");
-            }
-        }
-    }
-
-    public boolean getOrderById(int id) throws SQLException {
-        boolean isFound = false;
-        try (Connection connection = connectDatabase.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(QueryUtil.selectBookById(id));) {
-            if (resultSet.next()) {
-                isFound = true;
-                printOrder(new Orders(resultSet.getInt("orderID"),
-                        resultSet.getString("orderDate"),
-                        resultSet.getInt("quantityOrder")));
-            } else {
-                System.out.println("Record not found for ID = " + id);
-            }
-        }
-        return isFound;
-    }
-
-    public void deleteCustomerById(int customerID) throws SQLException {
-        try (Connection connection = connectDatabase.getConnection();
-                Statement statement = connection.createStatement();) {
-            int rows = statement.executeUpdate(QueryUtil.deleteCustomerByIdQuery(customerID));
-
-            if (rows > 0) {
-                System.out.println("Record deleted.");
-            } else {
-                System.out.println("Something went wrong.");
-            }
-        }
-    }
-
-    public boolean getCustomerById(int id) throws SQLException {
-        boolean isFound = false;
-        try (Connection connection = connectDatabase.getConnection();
-                Statement statement = connection.createStatement();
-                ResultSet resultSet = statement.executeQuery(QueryUtil.selectBookById(id));) {
-            if (resultSet.next()) {
-                isFound = true;
-                printCustomer(new Customers(resultSet.getInt("customerID"),
-                        resultSet.getString("customerName"),
-                        resultSet.getString("address"),
-                        resultSet.getInt("phoneNumber")));
-            } else {
-                System.out.println("Record not found for ID = " + id);
-            }
-        }
-        return isFound;
-    }
-
-    // -----------------------------------Update-----------------------------------
-
     public void updateBook(Books book) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 PreparedStatement preparedStatement = connection
@@ -287,22 +225,6 @@ public class DatabaseService {
             preparedStatement.setInt(1, book.getBookID());
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setInt(3, book.getStock());
-
-            int rows = preparedStatement.executeUpdate();
-            if (rows > 0) {
-                System.out.println("Record updated.");
-            } else {
-                System.out.println("Something went wrong.");
-            }
-        }
-    }
-
-    public void updateAuthor(Authors authors) throws SQLException {
-        try (Connection connection = connectDatabase.getConnection();
-                PreparedStatement preparedStatement = connection
-                        .prepareStatement(QueryUtil.updateAuthorQuery(authors.getAuthorID()));) {
-            preparedStatement.setInt(1, authors.getAuthorID());
-            preparedStatement.setString(2, authors.getAuthorName());
 
             int rows = preparedStatement.executeUpdate();
             if (rows > 0) {

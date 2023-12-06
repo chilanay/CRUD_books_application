@@ -1,5 +1,3 @@
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 import tables.Authors;
@@ -37,30 +35,36 @@ public class Main {
                   switch (choiceInsert) {
                      case 1:
                         System.out.println("Enter ID, title, stock");
-                        int bookID = Integer.parseInt(scanner.nextLine());
-                        String title = scanner.nextLine();
-                        int stock = Integer.parseInt(scanner.nextLine());
+                        String[] bookInput = scanner.nextLine().split(",");
+                        int bookID = Integer.parseInt(bookInput[0]);
+                        String title = bookInput[1].trim();
+                        int stock = Integer.parseInt(bookInput[2].trim());
                         databaseService.insertBooks(new Books(bookID, title, stock));
                         break;
                      case 2:
                         System.out.println("Enter AuthorID, Author Name");
-                        int authorID = Integer.parseInt(scanner.nextLine());
-                        String authorName = scanner.nextLine();
+                        String[] authorInput = scanner.nextLine().split(",");
+                        int authorID = Integer.parseInt(authorInput[0]);
+                        String authorName = authorInput[1].trim();
                         databaseService.insertAuthors(new Authors(authorID, authorName));
                         break;
                      case 3:
                         System.out.println("Enter OrderID, OrderDate, OrderQuantity");
-                        int orderID = Integer.parseInt(scanner.nextLine());
-                        String orderDate = scanner.nextLine();
-                        int quantityOrder = Integer.parseInt(scanner.nextLine());
-                        databaseService.insertOrders(new Orders(orderID, orderDate, quantityOrder));
+                        String[] orderInput = scanner.nextLine().split(",");
+                        int orderID = Integer.parseInt(orderInput[0]);
+                        String orderDate = orderInput[1].trim();
+                        int quantityOrder = Integer.parseInt(orderInput[2].trim());
+                        int bookIDOrders = Integer.parseInt(orderInput[3].trim());
+                        databaseService
+                              .insertOrderAndUpdateStock(new Orders(orderID, orderDate, quantityOrder, bookIDOrders));
                         break;
                      case 4:
                         System.out.println("Enter CustomerID, Customer Name, Address, Phone Number");
-                        int customerID = Integer.parseInt(scanner.nextLine());
-                        String customerName = scanner.nextLine();
-                        String customerAddress = scanner.nextLine();
-                        int phoneNumber = Integer.parseInt(scanner.nextLine());
+                        String[] customerInput = scanner.nextLine().split(",");
+                        int customerID = Integer.parseInt(customerInput[0]);
+                        String customerName = customerInput[1].trim();
+                        String customerAddress = customerInput[2].trim();
+                        int phoneNumber = Integer.parseInt(customerInput[3]);
                         databaseService
                               .insertCustomers(new Customers(customerID, customerName, customerAddress, phoneNumber));
                         break;
@@ -74,7 +78,6 @@ public class Main {
                   System.out.println("4. Customers table");
 
                   int choiceSelect = Integer.parseInt(scanner.nextLine());
-
                   switch (choiceSelect) {
                      case 1:
                         databaseService.getAllBooks();
@@ -91,65 +94,18 @@ public class Main {
                   }
                   break;
                case 3:
-                  System.out.println("Delete from:");
-                  System.out.println("1. Books table");
-                  System.out.println("2. Authors table");
-                  System.out.println("3. Orders table");
-                  System.out.println("4. Customers table");
-
-                  int choiceDelete = Integer.parseInt(scanner.nextLine());
-
-                  switch (choiceDelete) {
-                     case 1:
-                        System.out.println("Enter ID of Book:");
-                        databaseService.deleteBookById(Integer.parseInt(scanner.nextLine()));
-                        break;
-                     case 2:
-                        System.out.println("Enter ID of Author:");
-                        databaseService.deleteAuthorById(Integer.parseInt(scanner.nextLine()));
-                        break;
-                     case 3:
-                        System.out.println("Enter ID of Order:");
-                        databaseService.deleteOrderById(Integer.parseInt(scanner.nextLine()));
-                        break;
-                     case 4:
-                        System.out.println("Enter ID of Customer:");
-                        databaseService.deleteCustomerById(Integer.parseInt(scanner.nextLine()));
-                        break;
-                  }
+                  System.out.println("Enter ID of book:");
+                  databaseService.deleteBookById(Integer.parseInt(scanner.nextLine()));
                   break;
                case 4:
-                  System.out.println("Delete from:");
-                  System.out.println("1. Books table");
-                  System.out.println("2. Authors table");
-                  System.out.println("3. Orders table");
-                  System.out.println("4. Customers table");
+                  System.out.println("Enter ID of book:");
+                  int updateId = Integer.parseInt(scanner.nextLine());
+                  boolean isFound = databaseService.getBookById(updateId);
 
-                  int choiceUpdate = Integer.parseInt(scanner.nextLine());
-
-                  switch (choiceUpdate) {
-                     case 1:
-                        System.out.println("Enter ID of Book:");
-                        int updateId = Integer.parseInt(scanner.nextLine());
-                        boolean isFound = databaseService.getBookById(updateId);
-
-                        if (isFound) {
-                           System.out.println("Enter title, stock:");
-                           Books book = new Books(updateId, scanner.nextLine(), Integer.parseInt(scanner.nextLine()));
-                           databaseService.updateBook(book);
-                        }
-                        break;
-                     case 2:
-                        System.out.println("Enter ID of Author:");
-                        int updateIdAuthor = Integer.parseInt(scanner.nextLine());
-                        boolean isFoundAuthor = databaseService.getBookById(updateIdAuthor);
-
-                        if (isFoundAuthor) {
-                           System.out.println("Enter Author Name:");
-                           Authors author = new Authors(updateIdAuthor, scanner.nextLine());
-                           databaseService.updateAuthor(author);
-                        }
-                        break;
+                  if (isFound) {
+                     System.out.println("Enter title, stock:");
+                     Books book = new Books(updateId, scanner.nextLine(), Integer.parseInt(scanner.nextLine()));
+                     databaseService.updateBook(book);
                   }
                   break;
                case 5:

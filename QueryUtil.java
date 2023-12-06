@@ -3,19 +3,19 @@ public class QueryUtil {
     // -----------------------------------Insert-----------------------------------
 
     public static String insertBookQuery() {
-        return "INSERT INTO books (bookID, title, stock) VALUES (?, ?,?)";
+        return "INSERT INTO books (bookID, title, stock) VALUES (?,?,?)";
     }
 
     public static String insertAuthorQuery() {
-        return "INSERT INTO authors (authorID, authorName) VALUES (?, ?)";
+        return "INSERT INTO authors (authorID, authorName) VALUES (?,?)";
     }
 
     public static String insertOrdersQuery() {
-        return "INSERT INTO orders (orderID, orderDate, quantityOrder) VALUES (?, ?, ?)";
+        return "INSERT INTO orders (orderID, orderDate, quantityOrder, bookIDOrders) VALUES (?,?,?,?)";
     }
 
     public static String insertCustomersQuery() {
-        return "INSERT INTO customers (customerID, customerName, address, phoneNumber) VALUES (?, ?, ?, ?)";
+        return "INSERT INTO customers (customerID, customerName, address, phoneNumber) VALUES (?,?,?,?)";
     }
 
     // -----------------------------------Select-----------------------------------
@@ -46,37 +46,13 @@ public class QueryUtil {
         return "SELECT * FROM books WHERE bookID = " + bookID;
     }
 
-    public static String deleteAuthorByIdQuery(int authorID) {
-        return "DELETE FROM authors WHERE authorID = " + authorID;
-    }
+    // -----------------------------------Delete-----------------------------------
 
-    public static String selectAuthorById(int authorID) {
-        return "SELECT * FROM authors WHERE authorID = " + authorID;
+    public static String updateBookStockQuery() {
+        return "UPDATE books SET stock = stock - ? WHERE bookID = ?";
     }
-
-    public static String deleteOrderByIdQuery(int orderID) {
-        return "DELETE FROM orders WHERE orderID = " + orderID;
-    }
-
-    public static String selectOrderById(int orderID) {
-        return "SELECT * FROM orders WHERE orderID = " + orderID;
-    }
-
-    public static String deleteCustomerByIdQuery(int customerID) {
-        return "DELETE FROM customers WHERE customerID = " + customerID;
-    }
-
-    public static String selectCustomerById(int customerID) {
-        return "SELECT * FROM customers WHERE customerID = " + customerID;
-    }
-
-    // -----------------------------------Update-----------------------------------
 
     public static String updateBookQuery(int bookID) {
         return "UPDATE books SET bookID = ?, title = ?, stock = ? WHERE bookID = " + bookID;
-    }
-
-    public static String updateAuthorQuery(int authorID) {
-        return "UPDATE authors SET authorID = ?, authorName = ? WHERE authorID = " + authorID;
     }
 }
