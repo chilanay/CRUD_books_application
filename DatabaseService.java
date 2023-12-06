@@ -1,3 +1,4 @@
+// The DatabaseService class encapsulates methods for interacting with the database, including insert, select, delete, update, and metadata operations.
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
@@ -11,10 +12,12 @@ import tables.Customers;
 import tables.Orders;
 
 public class DatabaseService {
+    // Creating an instance of the ConnectToDatabase class to establish a database connection.
     ConnectToDatabase connectDatabase = new ConnectToDatabase();
 
-    // -----------------------------------Insert-----------------------------------
+    // -----------------------------------Insert Operations-----------------------------------
 
+    // Method to insert a book into the database.
     public void insertBooks(Books book) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(QueryUtil.insertBookQuery());) {
@@ -22,6 +25,7 @@ public class DatabaseService {
             preparedStatement.setString(2, book.getTitle());
             preparedStatement.setInt(3, book.getStock());
 
+            // Checking if the author exists before inserting the book.
             if (authorExists(book.getAuthorIDBooks())) {
                 preparedStatement.setInt(4, book.getAuthorIDBooks());
 
@@ -35,6 +39,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to check if an author with a given ID exists in the database.
     private boolean authorExists(int authorID) {
         try (Connection connection = connectDatabase.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(QueryUtil.selectAuthorByIdQuery())) {
@@ -48,6 +53,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to insert an author into the database.
     public void insertAuthors(Authors author) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(QueryUtil.insertAuthorQuery());) {
@@ -63,6 +69,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to insert an order into the database and update the stock.
     public void insertOrderAndUpdateStock(Orders order) throws SQLException {
         Connection connection = null;
         try {
@@ -108,6 +115,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to insert a customer into the database.
     public void insertCustomers(Customers customer) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(QueryUtil.insertCustomersQuery());) {
@@ -125,8 +133,9 @@ public class DatabaseService {
         }
     }
 
-    // -----------------------------------Select-----------------------------------
+    // -----------------------------------Select Operations-----------------------------------
 
+    // Method to retrieve all books from the database and print them.
     public void getAllBooks() throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 Statement statement = connection.createStatement();
@@ -140,6 +149,7 @@ public class DatabaseService {
         }
     }
 
+    // Helper method to print book information.
     private void printBook(Books book) {
         System.out.println("Book ID: " + book.getBookID());
         System.out.println("Book Title: " + book.getTitle());
@@ -148,6 +158,7 @@ public class DatabaseService {
         System.out.println("---------------------------------------------");
     }
 
+    // Method to retrieve all authors from the database and print them.
     public void getAllAuthors() throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 Statement statement = connection.createStatement();
@@ -159,12 +170,14 @@ public class DatabaseService {
         }
     }
 
+    // Helper method to print author information.
     private void printAuthor(Authors author) {
         System.out.println("Author ID: " + author.getAuthorID());
         System.out.println("Author Name: " + author.getAuthorName());
         System.out.println("---------------------------------------------");
     }
 
+    // Method to retrieve all orders from the database and print them.
     public void getAllOrders() throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 Statement statement = connection.createStatement();
@@ -178,6 +191,7 @@ public class DatabaseService {
         }
     }
 
+    // Helper method to print order information.
     private void printOrder(Orders order) {
         System.out.println("Order ID: " + order.getOrderID());
         System.out.println("Order Date: " + order.getOrderDate());
@@ -185,6 +199,7 @@ public class DatabaseService {
         System.out.println("---------------------------------------------");
     }
 
+    // Method to retrieve all customers from the database and print them.
     public void getAllCustomers() throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 Statement statement = connection.createStatement();
@@ -198,6 +213,7 @@ public class DatabaseService {
         }
     }
 
+    // Helper method to print customer information.
     private void printCustomer(Customers customers) {
         System.out.println("Order ID: " + customers.getCustomerID());
         System.out.println("Order Date: " + customers.getCustomerName());
@@ -206,8 +222,9 @@ public class DatabaseService {
         System.out.println("---------------------------------------------");
     }
 
-    // -----------------------------------Delete-----------------------------------
+    // -----------------------------------Delete Operations-----------------------------------
 
+    // Method to delete a book from the database by its ID.
     public void deleteBookById(int bookID) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 Statement statement = connection.createStatement();) {
@@ -221,6 +238,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to check if a book with a given ID exists in the database.
     public boolean getBookById(int id) throws SQLException {
         boolean isFound = false;
         try (Connection connection = connectDatabase.getConnection();
@@ -239,8 +257,9 @@ public class DatabaseService {
         return isFound;
     }
 
-    // -----------------------------------Update-----------------------------------
+    // -----------------------------------Update Operation-----------------------------------
 
+    // Method to update book information in the database.
     public void updateBook(Books book) throws SQLException {
         try (Connection connection = connectDatabase.getConnection();
                 PreparedStatement preparedStatement = connection
@@ -259,8 +278,9 @@ public class DatabaseService {
         }
     }
 
-    // -----------------------------------Metadata-----------------------------------
+    // -----------------------------------Metadata Operations-----------------------------------
 
+    // Method to display all table names in the connected database.
     public void displayTableInfo() {
         try (Connection connection = connectDatabase.getConnection()) {
             DatabaseMetaData metaData = connection.getMetaData();
@@ -274,6 +294,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to display column information for a specified table.
     public void displayColumnInfo(String tableName) {
         try (Connection connection = connectDatabase.getConnection()) {
             DatabaseMetaData metaData = connection.getMetaData();
@@ -289,6 +310,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to display primary keys for a specified table.
     public void displayPrimaryKeys(String tableName) {
         try (Connection connection = connectDatabase.getConnection()) {
             DatabaseMetaData metaData = connection.getMetaData();
@@ -303,6 +325,7 @@ public class DatabaseService {
         }
     }
 
+    // Method to display foreign keys for a specified table.
     public void displayForeignKeys(String tableName) {
         try (Connection connection = connectDatabase.getConnection()) {
             DatabaseMetaData metaData = connection.getMetaData();
